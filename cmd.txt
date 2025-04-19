@@ -1,0 +1,84 @@
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl get pods -n ingress-nginx
+NAME                                        READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-45phx        0/1     Completed   0          25h
+ingress-nginx-admission-patch-wn5rv         0/1     Completed   2          25h
+ingress-nginx-controller-5c99f9f687-n9xdq   1/1     Running     0          3m43s
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl get svc -n ingress-nginx
+NAME                                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+ingress-nginx-controller             NodePort    10.96.239.136   <none>        80:31386/TCP,443:32016/TCP   25h
+ingress-nginx-controller-admission   ClusterIP   10.96.130.216   <none>        443/TCP                      25h
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl get ingress
+NAME              CLASS   HOSTS                        ADDRESS     PORTS   AGE
+booking-ingress   nginx   k8s-booking.souravcodes.in   localhost   80      24h
+hello-world       nginx   k8s-souravcodes.in           localhost   80      13m
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl get pods -n ingress-nginx
+NAME                                        READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-45phx        0/1     Completed   0          25h
+ingress-nginx-admission-patch-wn5rv         0/1     Completed   2          25h
+ingress-nginx-controller-5c99f9f687-n9xdq   1/1     Running     0          10m
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl logs ingress-nginx-controller-5c99f9f687-n9xdq
+error: error from server (NotFound): pods "ingress-nginx-controller-5c99f9f687-n9xdq" not found in namespace "booking"
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl logs ingress-nginx-controller-5c99f9f687-n9xdq -n ingress
+error: error from server (NotFound): namespaces "ingress" not found in namespace "ingress"
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl logs ingress-nginx-controller-5c99f9f687-n9xdq -n ingress-nginx
+-------------------------------------------------------------------------------
+NGINX Ingress controller
+  Release:       v1.10.1
+  Build:         4fb5aac1dd3669daa3a14d9de3e3cdb371b4c518
+  Repository:    https://github.com/kubernetes/ingress-nginx
+  nginx version: nginx/1.25.3
+
+-------------------------------------------------------------------------------
+
+W0419 21:49:19.126011      11 client_config.go:618] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+I0419 21:49:19.126134      11 main.go:205] "Creating API client" host="https://10.96.0.1:443"
+I0419 21:49:19.130354      11 main.go:248] "Running in Kubernetes cluster" major="1" minor="32" git="v1.32.2" state="clean" commit="67a30c0adcf52bd3f56ff0893ce19966be12991f" platform="linux/amd64"
+I0419 21:49:19.292869      11 main.go:101] "SSL fake certificate created" file="/etc/ingress-controller/ssl/default-fake-certificate.pem"
+I0419 21:49:19.306787      11 ssl.go:535] "loading tls certificate" path="/usr/local/certificates/cert" key="/usr/local/certificates/key"
+I0419 21:49:19.321171      11 nginx.go:264] "Starting NGINX Ingress controller"
+I0419 21:49:19.334490      11 event.go:364] Event(v1.ObjectReference{Kind:"ConfigMap", Namespace:"ingress-nginx", Name:"ingress-nginx-controller", UID:"c6318bc7-6de3-43df-b8ad-13831477503f", APIVersion:"v1", ResourceVersion:"26084", FieldPath:""}): type: 'Normal' reason: 'CREATE' ConfigMap ingress-nginx/ingress-nginx-controller
+I0419 21:49:20.426757      11 store.go:440] "Found valid IngressClass" ingress="booking/booking-ingress" ingressclass="nginx"
+I0419 21:49:20.427531      11 store.go:440] "Found valid IngressClass" ingress="booking/hello-world" ingressclass="nginx"
+I0419 21:49:20.428002      11 event.go:364] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"booking", Name:"booking-ingress", UID:"0d99812e-b257-4e0f-9775-c3e73c71ce0d", APIVersion:"networking.k8s.io/v1", ResourceVersion:"26122", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+I0419 21:49:20.428081      11 event.go:364] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"booking", Name:"hello-world", UID:"ead1b9b5-6925-4c2a-aa6e-e466b5e2de1f", APIVersion:"networking.k8s.io/v1", ResourceVersion:"26121", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+I0419 21:49:20.525213      11 nginx.go:307] "Starting NGINX process"
+I0419 21:49:20.525321      11 leaderelection.go:250] attempting to acquire leader lease ingress-nginx/ingress-nginx-leader...
+I0419 21:49:20.525926      11 nginx.go:327] "Starting validation webhook" address=":8443" certPath="/usr/local/certificates/cert" keyPath="/usr/local/certificates/key"
+W0419 21:49:20.526398      11 controller.go:1213] Service "booking/hello-world" does not have any active Endpoint.
+I0419 21:49:20.526524      11 controller.go:190] "Configuration changes detected, backend reload required"
+I0419 21:49:20.530078      11 status.go:84] "New leader elected" identity="ingress-nginx-controller-57bf4898db-ps9rt"
+I0419 21:49:20.573537      11 controller.go:210] "Backend successfully reloaded"
+I0419 21:49:20.573632      11 controller.go:221] "Initial sync, sleeping for 1 second"
+I0419 21:49:20.573708      11 event.go:364] Event(v1.ObjectReference{Kind:"Pod", Namespace:"ingress-nginx", Name:"ingress-nginx-controller-5c99f9f687-n9xdq", UID:"6706fc1f-23bf-40ba-bab5-1591ff7ed243", APIVersion:"v1", ResourceVersion:"26116", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+W0419 21:49:23.861609      11 controller.go:1213] Service "booking/hello-world" does not have any active Endpoint.
+W0419 21:49:31.006122      11 controller.go:1213] Service "booking/hello-world" does not have any active Endpoint.
+W0419 21:49:34.340762      11 controller.go:1213] Service "booking/hello-world" does not have any active Endpoint.
+I0419 21:49:58.330951      11 leaderelection.go:260] successfully acquired lease ingress-nginx/ingress-nginx-leader
+I0419 21:49:58.331030      11 status.go:84] "New leader elected" identity="ingress-nginx-controller-5c99f9f687-n9xdq"
+I0419 21:49:58.333353      11 status.go:304] "updating Ingress status" namespace="booking" ingress="booking-ingress" currentValue=null newValue=[{"hostname":"localhost"}]
+I0419 21:49:58.333556      11 status.go:304] "updating Ingress status" namespace="booking" ingress="hello-world" currentValue=null newValue=[{"hostname":"localhost"}]
+W0419 21:49:58.339391      11 controller.go:1213] Service "booking/hello-world" does not have any active Endpoint.
+I0419 21:49:58.339443      11 event.go:364] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"booking", Name:"hello-world", UID:"ead1b9b5-6925-4c2a-aa6e-e466b5e2de1f", APIVersion:"networking.k8s.io/v1", ResourceVersion:"26248", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+I0419 21:49:58.339462      11 event.go:364] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"booking", Name:"booking-ingress", UID:"0d99812e-b257-4e0f-9775-c3e73c71ce0d", APIVersion:"networking.k8s.io/v1", ResourceVersion:"26249", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+W0419 21:50:01.673499      11 controller.go:1213] Service "booking/hello-world" does not have any active Endpoint.
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl get ing
+NAME              CLASS   HOSTS                        ADDRESS     PORTS   AGE
+booking-ingress   nginx   k8s-booking.souravcodes.in   localhost   80      24h
+hello-world       nginx   k8s-souravcodes.in           localhost   80      16m
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl get svc -n ingress-nginx                                       
+NAME                                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+ingress-nginx-controller             NodePort    10.96.239.136   <none>        80:31386/TCP,443:32016/TCP   25h
+ingress-nginx-controller-admission   ClusterIP   10.96.130.216   <none>        443/TCP                      25h
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl get ing                                                        
+NAME              CLASS   HOSTS                        ADDRESS     PORTS   AGE
+booking-ingress   nginx   k8s-booking.souravcodes.in   localhost   80      25h
+hello-world       nginx   k8s-souravcodes.in           localhost   80      22m
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl get pods -n hello-world -l app=hello-world
+
+NAME                           READY   STATUS    RESTARTS   AGE
+hello-world-5447c69949-ntszd   1/1     Running   0          174m
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % kubectl get ing                                   
+NAME              CLASS   HOSTS                        ADDRESS     PORTS   AGE
+booking-ingress   nginx   k8s-booking.souravcodes.in   localhost   80      25h
+hello-world       nginx   k8s-souravcodes.in           localhost   80      28m
+souravchaudhary@Souravs-MacBook-Pro-2 Flask % 
